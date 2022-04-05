@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LizardFS Calc</title>
+    <style>
+        fieldset > label {
+            display: block;
+        }
+        fieldset {
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>LizardFS Master Server HDD space calculator</h1>
+    <section>
+        <fieldset>
+            <label>
+                RAM (GiB):
+                <input type="number" id="ram" value="128">
+            </label>
+            <label>
+                BACK LOGS:
+                <input type="number" id="back_logs" value="50">
+            </label>
+            <label>
+                BACK META KEEP PREVIOUS:
+                <input type="number" id="back_meta_keep_prev" value="1">
+            </label>
+            <label>
+                changelog.[number].mfs file size:
+                <input type="number" id="changelog_file_size" value="1">
+            </label>
+        </fieldset>
+
+        <button id="calc">Calculate</button>
+
+        <fieldset>
+        <label>You should reserve for /var/lib/mfs:
+            <input type="number" id="result" value="0" readonly> [GiB]
+        </label>
+        </fieldset>
+
+    </section>
+
+    <section>
+        <h2>Fields descriptions</h2>
+        <p>
+            <em>BACK LOGS</em>: number of metadata change log files, default is 50 (from /etc/mfs/mfsmaster.cfg)
+        </p>
+        <p>
+            <em>BACK META KEEP PREVIOUS</em>: number of previous metadata files to be kept (default is 1) (from /etc/mfs/mfsmaster.cfg)
+        </p>
+        <p>
+            <em>changelog.[number].mfs file size</em>: estimated size of one changelog.[number].mfs file (in GiB)
+        </p>
+    </section>
+
+    <section>
+        <h2>Formula</h2>
+        <p>
+            <tt>SPACE = RAM * (BACK META KEEP PREVIOUS + 2) + (changelog.[number].mfs file size) * (BACK LOGS + 1) [GiB]</tt>
+        </p>
+    </section>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script>
+        $("#calc").click(() => {
+            let ram = +$("#ram").val();
+            let bl = +$("#back_logs").val();
+            let bmkp = +$("#back_meta_keep_prev").val();
+            let cfs = +$("#changelog_file_size").val();
+            let r = ram * (bmkp + 2) + cfs * (bl + 1);
+            $("#result").val(r);
+        });
+
+        $("#calc").click();
+    </script>
+</body>
+</html>
