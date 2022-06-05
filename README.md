@@ -1,9 +1,11 @@
-# lfs-calc v0.1
- 
+# lfs-calc v0.2
+
 Calculator for LizardFS hardware requirements.
 
-Current version includes:
-  * Master Server HDD space calculator
+Current version can calculate:
+
+* Master Server RAM
+* Master Server HDD space
 
 ## Usage
 
