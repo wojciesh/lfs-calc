@@ -15,7 +15,58 @@
     </style>
 </head>
 <body>
-    <h1>LizardFS Master Server HDD space calculator</h1>
+    <!-- RAM -->
+    <h1>LizardFS Calculator</h1>
+    
+    <hr>
+
+    <h2>Master Server RAM</h2>
+    <section>
+        <fieldset>
+            <label>
+                LFS Objects count:
+                <input type="number" id="ram_count" value="1000000">
+            </label>
+            <label>
+                LFS Object meta size (bytes):
+                <input type="number" id="ram_size" step="0.01" value="311.13">
+            </label>
+        </fieldset>
+
+        <button id="ram_calc">Calculate</button>
+
+        <fieldset>
+            <label>Amount of RAM needed for Master Server:
+                <br>
+                <input type="number" id="ram_result_gib" value="0" readonly> [GiB]
+                <br>
+                <input type="number" id="ram_result_b" value="0" readonly> [bytes]
+            </label>
+        </fieldset>
+    </section>
+
+    <section>
+        <h2>Fields descriptions</h2>
+        <p>
+            <em>LFS Objects count</em>: number of LFS Objects (files, directories, pipes, sockets, ...)
+            in the file system ("<i>All FS objects</i>" from CGI)
+        </p>
+        <p>
+            <em>LFS Object meta size</em>: approximated size of the one LFS Object meta info (default is 311.13 bytes).
+        </p>
+    </section>
+
+    <section>
+        <h2>Formula</h2>
+        <p>
+            <tt>RAM = SIZE * COUNT / 1073741824 [GiB]</tt>
+        </p>
+    </section>
+
+    <hr>
+    
+    <!-- HDD SPACE -->
+    <h2>Master Server HDD space</h2>
     <section>
         <fieldset>
             <label>
@@ -40,6 +91,7 @@
 
         <fieldset>
         <label>You should reserve for /var/lib/mfs:
+            <br>
             <input type="number" id="result" value="0" readonly> [GiB]
         </label>
         </fieldset>
@@ -68,6 +120,18 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script>
+        // RAM
+        $("#ram_calc").click(() => {
+            let size = parseFloat($("#ram_size").val());
+            let count = +$("#ram_count").val();
+            let ram_b = Math.ceil(size * count);
+            const ram_gib = ram_b / 1073741824.0
+            $("#ram_result_b").val(ram_b);
+            $("#ram_result_gib").val(ram_gib.toFixed(2));
+        });
+        $("#ram_calc").click();
+        
+        // HDD
         $("#calc").click(() => {
             let ram = +$("#ram").val();
             let bl = +$("#back_logs").val();
